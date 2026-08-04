@@ -1,0 +1,6 @@
+{
+  "name": "Connexa",
+  "description": "An AI-powered professional networking and job platform featuring smart job matching, candidate search, employer management, and admin notifications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
