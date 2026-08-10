@@ -39,10 +39,21 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers,
   });
 
-  const data = await response.json();
+  const contentType = response.headers.get('content-type') || '';
+  const isJson = contentType.includes('application/json');
+  const data = isJson ? await response.json() : await response.text();
 
   if (!response.ok) {
-    throw new Error(data.message || `HTTP error ${response.status}`);
+    if (isJson && typeof data === 'object' && data !== null && 'message' in data) {
+      throw new Error(String((data as { message?: unknown }).message || `HTTP error ${response.status}`));
+    }
+
+    const preview = typeof data === 'string' ? data.slice(0, 120).trim() : '';
+    throw new Error(
+      preview
+        ? `HTTP error ${response.status}: ${preview}`
+        : `HTTP error ${response.status}`
+    );
   }
 
   return data as T;
