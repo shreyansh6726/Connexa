@@ -123,6 +123,7 @@ npm start
 | `MONGODB_SEED` | No | Set to `true` to seed empty collections with demo data |
 | `JWT_SECRET` | Recommended | Secret used to sign authentication tokens |
 | `APP_URL` | No | Public application URL used by deployments and integrations |
+| `VITE_API_BASE_URL` | Frontend deploys | API origin used by the Vite frontend in production (for example `https://your-backend-domain.com`) |
 | `OPENAI_API_KEY` | No | Reserved optional configuration; current matching and generation logic uses built-in algorithms |
 
 ## MongoDB collections
@@ -196,6 +197,18 @@ The development and production server listen on port `3000`. Stop the process us
 ### Demo data is not appearing
 
 Confirm that `MONGODB_SEED="true"` is set and that the configured collections are empty. Existing collections are intentionally not overwritten.
+
+### Vercel shows `/api/...` 404 responses
+
+If your frontend is deployed on Vercel but your Express API is deployed elsewhere, set `VITE_API_BASE_URL` in Vercel Project Settings -> Environment Variables to your backend origin, then redeploy.
+
+Example:
+
+```env
+VITE_API_BASE_URL="https://your-backend-domain.com"
+```
+
+Without this, browser calls to `/api/*` are sent to the Vercel frontend domain, which returns `NOT_FOUND` when no serverless API route exists.
 
 ## License
 
