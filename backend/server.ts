@@ -1,7 +1,5 @@
 import cors from 'cors';
 import express from 'express';
-import path from 'path';
-import { createServer as createViteServer } from 'vite';
 
 import { db } from './src/server/db';
 import { authMiddleware, requireRole } from './src/server/middleware/auth';
@@ -15,7 +13,6 @@ async function startServer() {
   await db.initialize();
   const app = express();
   const PORT = 3000;
-  const frontendRoot = path.resolve(process.cwd(), '../frontend');
 
   // Middlewares
   app.use(cors());
@@ -55,21 +52,9 @@ async function startServer() {
     res.json({ users });
   });
 
-  // Vite Middleware in Development, Static Serving in Production
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      root: frontendRoot,
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(frontendRoot, 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
+  app.get('/', (req, res) => {
+    res.json({ service: 'Connexa Backend API', status: 'ok' });
+  });
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Connexa server listening on http://0.0.0.0:${PORT}`);
