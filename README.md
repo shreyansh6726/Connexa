@@ -37,7 +37,13 @@ The application uses a React/Vite frontend, an Express/Node.js API, and MongoDB 
 
 ### 1. Install dependencies
 
+Install dependencies separately for each app:
+
 ```bash
+cd frontend
+npm install
+
+cd ../backend
 npm install
 ```
 
@@ -69,15 +75,27 @@ APP_URL="http://localhost:3000"
 
 Do not commit `.env` or any file containing real credentials.
 
-### 3. Start the development server
+### 3. Start the development servers
+
+Run backend and frontend in separate terminals.
+
+Backend:
 
 ```bash
+cd backend
 npm run dev
 ```
 
-The application is available at [http://localhost:3000](http://localhost:3000).
+Frontend:
 
-The server connects to MongoDB before accepting requests. If `MONGODB_URI` is missing or still contains the placeholder value, startup will fail with a configuration error.
+```bash
+cd frontend
+npm run dev
+```
+
+Frontend runs at [http://localhost:5173](http://localhost:5173) and proxies `/api/*` requests to the backend at [http://localhost:3000](http://localhost:3000).
+
+The backend connects to MongoDB before accepting requests. If `MONGODB_URI` is missing or still contains the placeholder value, startup will fail with a configuration error.
 
 ## Demo data
 
@@ -98,18 +116,33 @@ Change or remove these accounts before using the application in production.
 
 ## Available scripts
 
+Scripts are now scoped to each app.
+
+Frontend (`frontend/package.json`):
+
 | Command | Description |
 | --- | --- |
-| `npm run dev` | Start the Express server with Vite development middleware |
-| `npm run lint` | Run the TypeScript compiler without emitting files |
-| `npm run build` | Build the frontend and bundle the production server |
-| `npm start` | Start the bundled production server from `dist/` |
-| `npm run preview` | Preview the Vite frontend build |
-| `npm run clean` | Remove generated build output |
+| `npm run dev` | Start the Vite development server |
+| `npm run build` | Build the frontend into `frontend/dist` |
+| `npm run preview` | Preview the frontend production build |
+| `npm run lint` | Run TypeScript checks for frontend files |
 
-For a production run:
+Backend (`backend/package.json`):
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Express API server |
+| `npm run build` | Bundle backend server to `backend/dist/server.cjs` |
+| `npm start` | Start bundled backend server |
+| `npm run lint` | Run TypeScript checks for backend files |
+
+Production run:
 
 ```bash
+cd frontend
+npm run build
+
+cd ../backend
 npm run build
 npm start
 ```
@@ -162,22 +195,36 @@ Authorization: Bearer <jwt-token>
 
 ```text
 .
-├── server.ts                 # Express/Vite server entry point
-├── src/
-│   ├── components/           # Shared React components
-│   ├── context/              # React context providers
-│   ├── pages/                # Role-specific application pages
-│   ├── server/
-│   │   ├── controllers/      # HTTP request handlers
-│   │   ├── middleware/       # Authentication and authorization
-│   │   ├── routes/            # API route definitions
-│   │   ├── services/          # Matching and content-generation services
-│   │   └── db.ts              # MongoDB connection and data access layer
-│   ├── services/api.ts        # Frontend API client
-│   └── types.ts               # Shared TypeScript types
-├── .env.example               # Environment variable template
-└── package.json
+├── frontend/
+│   ├── index.html             # Frontend entry HTML
+│   ├── package.json           # Frontend scripts and deps
+│   ├── vite.config.ts         # Vite config and API proxy
+│   └── src/
+│       ├── components/        # Shared React components
+│       ├── context/           # React context providers
+│       ├── pages/             # Role-specific application pages
+│       ├── services/api.ts    # Frontend API client
+│       └── types.ts           # Frontend TypeScript types
+├── backend/
+│   ├── server.ts              # Express API server entry point
+│   ├── package.json           # Backend scripts and deps
+│   └── src/
+│       ├── types.ts           # Backend TypeScript types
+│       └── server/
+│           ├── controllers/   # HTTP request handlers
+│           ├── middleware/    # Authentication and authorization
+│           ├── routes/        # API route definitions
+│           ├── services/      # Matching/content-generation services
+│           └── db.ts          # MongoDB connection and data access layer
+└── .env.example               # Environment variable template
 ```
+
+## Deployment
+
+- Vercel root directory: `frontend`
+- Render root directory: `backend`
+
+If frontend and backend are deployed separately, set `VITE_API_BASE_URL` in Vercel to the backend public URL.
 
 ## Troubleshooting
 

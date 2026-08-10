@@ -15,6 +15,7 @@ async function startServer() {
   await db.initialize();
   const app = express();
   const PORT = 3000;
+  const frontendRoot = path.resolve(process.cwd(), '../frontend');
 
   // Middlewares
   app.use(cors());
@@ -57,12 +58,13 @@ async function startServer() {
   // Vite Middleware in Development, Static Serving in Production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
+      root: frontendRoot,
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
+    const distPath = path.join(frontendRoot, 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
