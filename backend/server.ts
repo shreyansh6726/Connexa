@@ -12,7 +12,7 @@ import notificationRoutes from './src/server/routes/notificationRoutes';
 async function startServer() {
   await db.initialize();
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT || 3000);
 
   // Middlewares
   app.use(cors());
