@@ -62,7 +62,9 @@ class JobCard extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        job.company.isNotEmpty ? job.company[0].toUpperCase() : 'C',
+                        job.company.isNotEmpty
+                            ? job.company[0].toUpperCase()
+                            : 'C',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -116,7 +118,8 @@ class JobCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(8),
@@ -132,7 +135,8 @@ class JobCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: const Color(0xFFEEF2FF),
                         borderRadius: BorderRadius.circular(8),
