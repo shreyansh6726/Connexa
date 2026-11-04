@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import 'dotenv/config';
 import { Collection, Db, MongoClient } from 'mongodb';
-import { Application, Job, Notification, User } from '../types';
+import { Application, InterviewSession, Job, Notification, User } from '../types';
 
 // Default Seed Data Generator
 function getSeedPasswordHash() {
@@ -483,6 +483,7 @@ class DatabaseStore {
   private jobs?: Collection<Job>;
   private applications?: Collection<Application>;
   private notifications?: Collection<Notification>;
+  private interviews?: Collection<InterviewSession>;
 
   constructor() {
     const uri = process.env.MONGODB_URI;
@@ -501,6 +502,7 @@ class DatabaseStore {
     this.jobs = this.db.collection<Job>('jobs');
     this.applications = this.db.collection<Application>('applications');
     this.notifications = this.db.collection<Notification>('notifications');
+    this.interviews = this.db.collection<InterviewSession>('interviews');
     await this.seedIfEnabled();
     console.log(`Connected to MongoDB database "${this.db.databaseName}".`);
   }
@@ -523,7 +525,7 @@ class DatabaseStore {
 
   private async readyCollections() {
     await this.ready;
-    return { users: this.users!, passwords: this.passwords!, jobs: this.jobs!, applications: this.applications!, notifications: this.notifications! };
+    return { users: this.users!, passwords: this.passwords!, jobs: this.jobs!, applications: this.applications!, notifications: this.notifications!, interviews: this.interviews! };
   }
 
   public async initialize() {
@@ -813,6 +815,46 @@ class DatabaseStore {
     const { notifications } = await this.readyCollections();
     await notifications.updateMany({ $or: [{ recipient: userId }, ...(role === 'ADMIN' ? [{ recipient: 'ADMIN_ALL' }] : [])] }, { $set: { isRead: true } });
   }
+
+  // --- INTERVIEWS ---
+  public async createInterview(interview: InterviewSession): Promise<InterviewSession> {
+    const { interviews } = await this.readyCollections();
+    await interviews.insertOne(interview);
+    return interview;
+  }
+
+  public async getInterviewById(id: string): Promise<InterviewSession | undefined> {
+    const { interviews } = await this.readyCollections();
+    return (await interviews.findOne({ _id: id })) || undefined;
+  }
+
+  public async updateInterview(id: string, updates: Partial<InterviewSession>): Promise<InterviewSession | undefined> {
+    const { interviews } = await this.readyCollections();
+    await interviews.updateOne({ _id: id }, { $set: updates });
+    return (await interviews.findOne({ _id: id })) || undefined;
+  }
+
+  public async getInterviewsByCandidate(candidateId: string): Promise<InterviewSession[]> {
+    const { interviews } = await this.readyCollections();
+    return interviews.find({ candidateId }).sort({ createdAt: -1 }).toArray();
+  }
+
+  public async getInterviewsByJob(jobId: string): Promise<InterviewSession[]> {
+    const { interviews } = await this.readyCollections();
+    return interviews.find({ jobId }).sort({ createdAt: -1 }).toArray();
+  }
+
+  public async getInterviewByApplication(applicationId: string): Promise<InterviewSession | undefined> {
+    const { interviews } = await this.readyCollections();
+    return (await interviews.findOne({ applicationId })) || undefined;
+  }
+
+  public async updateApplication(id: string, updates: Partial<Application>): Promise<Application | undefined> {
+    const { applications } = await this.readyCollections();
+    await applications.updateOne({ _id: id }, { $set: updates });
+    return (await applications.findOne({ _id: id })) || undefined;
+  }
+
 }
 
 function escapeRegex(value: string) {

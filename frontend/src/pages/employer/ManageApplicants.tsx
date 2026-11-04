@@ -102,6 +102,7 @@ export const ManageApplicants: React.FC<ManageApplicantsProps> = ({ onNavigate, 
                     <th className="px-5 py-3">Candidate</th>
                     <th className="px-5 py-3">Target Requisition</th>
                     <th className="px-5 py-3">AI Fit Index</th>
+                    <th className="px-5 py-3">AI Interview</th>
                     <th className="px-5 py-3">Status</th>
                     <th className="px-5 py-3">Actions</th>
                   </tr>
@@ -130,6 +131,17 @@ export const ManageApplicants: React.FC<ManageApplicantsProps> = ({ onNavigate, 
 
                       <td className="px-5 py-4">
                         <AiMatchBadge score={app.aiMatchScore} size="sm" />
+                      </td>
+
+                      <td className="px-5 py-4">
+                        {app.interviewScore ? (
+                          <span className="px-2.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold inline-flex items-center space-x-1">
+                            <Award className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>{app.interviewScore}% ({app.interviewRecommendation || 'Passed'})</span>
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 text-xs italic">Not Taken Yet</span>
+                        )}
                       </td>
 
                       <td className="px-5 py-4">
@@ -206,6 +218,26 @@ export const ManageApplicants: React.FC<ManageApplicantsProps> = ({ onNavigate, 
                 </div>
                 <p className="text-xs text-indigo-900 leading-relaxed">{selectedApp.aiMatchAnalysis}</p>
               </div>
+
+              {selectedApp.interviewScore && (
+                <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-emerald-950 flex items-center space-x-1.5">
+                      <Award className="w-4 h-4 text-emerald-600" />
+                      <span>Live AI Technical Interview Result</span>
+                    </span>
+                    <span className="px-2.5 py-0.5 bg-emerald-600 text-white font-extrabold text-xs rounded-full">
+                      {selectedApp.interviewScore}/100 Score
+                    </span>
+                  </div>
+                  <div className="text-xs text-emerald-900 flex items-center space-x-2">
+                    <span className="font-semibold">Hiring Verdict:</span>
+                    <span className="px-2 py-0.5 bg-emerald-200/60 text-emerald-900 rounded-md font-bold uppercase text-[10px]">
+                      {selectedApp.interviewRecommendation?.replace('_', ' ') || 'Recommended'}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {selectedApp.applicantDetails?.profile?.bio && (
                 <div>

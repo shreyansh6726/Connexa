@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Building2, Check, CheckCircle2, DollarSign, MapPin, Send, Sparkles, X, XCircle } from 'lucide-react';
+import { Bot, Building2, Check, CheckCircle2, DollarSign, MapPin, Send, Sparkles, X, XCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { AiMatchResult, Job } from '../../types';
@@ -9,6 +9,7 @@ interface JobDetailsProps {
   hasApplied?: boolean;
   onClose: () => void;
   onApplySuccess?: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 export const JobDetails: React.FC<JobDetailsProps> = ({
@@ -16,6 +17,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
   hasApplied = false,
   onClose,
   onApplySuccess,
+  onNavigate,
 }) => {
   const { user } = useAuth();
   const [applied, setApplied] = useState(hasApplied);

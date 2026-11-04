@@ -9,6 +9,7 @@ import { Register } from './pages/common/Register';
 import { Unauthorized } from './pages/common/Unauthorized';
 import { EmployeeDashboard } from './pages/employee/EmployeeDashboard';
 import { ProfileBuilder } from './pages/employee/ProfileBuilder';
+import { LiveInterviewRoom } from './pages/employee/LiveInterviewRoom';
 import { SearchJobs } from './pages/employee/SearchJobs';
 import { EmployerDashboard } from './pages/employer/EmployerDashboard';
 import { ManageApplicants } from './pages/employer/ManageApplicants';
@@ -62,6 +63,18 @@ export function MainApp() {
           </ProtectedRoute>
         );
 
+      case '/interview':
+        return (
+          <ProtectedRoute allowedRoles={['EMPLOYEE']} onNavigate={navigate}>
+            <LiveInterviewRoom
+              onNavigate={navigate}
+              interviewId={queryParams.get('interviewId') || undefined}
+              jobId={queryParams.get('jobId') || undefined}
+              applicationId={queryParams.get('applicationId') || undefined}
+            />
+          </ProtectedRoute>
+        );
+
       case '/employee/profile':
         return (
           <ProtectedRoute allowedRoles={['EMPLOYEE']} onNavigate={navigate}>
@@ -109,9 +122,9 @@ export function MainApp() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col selection:bg-indigo-500 selection:text-white">
-      <Navbar currentPath={currentPath} onNavigate={navigate} />
+      {!currentPath.startsWith('/interview') && <Navbar currentPath={currentPath} onNavigate={navigate} />}
       <main className="flex-1 flex flex-col">{renderRoute()}</main>
-      <FooterStatus />
+      {!currentPath.startsWith('/interview') && <FooterStatus />}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import {
   AuthResponse,
   BioGenerationResult,
   EnhanceJobResult,
+  InterviewSession,
+  InterviewEvaluation,
   Job,
   Notification,
   User,
@@ -195,6 +197,41 @@ export const api = {
       openJobs: number;
       totalApplications: number;
     }>('/api/admin/stats'),
+
+
+  // Live AI Interview
+  startInterview: (jobId: string, applicationId?: string) =>
+    request<{ interview: InterviewSession; greeting: string; firstQuestion: string; totalQuestions: number }>(
+      '/api/interview/start',
+      {
+        method: 'POST',
+        body: JSON.stringify({ jobId, applicationId }),
+      }
+    ),
+
+  submitInterviewAnswer: (id: string, answerText: string) =>
+    request<{
+      isComplete: boolean;
+      currentQuestionIndex: number;
+      totalQuestions: number;
+      nextQuestion?: string;
+      feedback?: string;
+      score?: number;
+      evaluation?: InterviewEvaluation;
+      interview: InterviewSession;
+    }>(`/api/interview/${id}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ answerText }),
+    }),
+
+  getInterview: (id: string) =>
+    request<{ interview: InterviewSession }>(`/api/interview/${id}`),
+
+  getMyInterviews: () =>
+    request<{ interviews: InterviewSession[] }>('/api/interview/candidate/my'),
+
+  getApplicationInterview: (applicationId: string) =>
+    request<{ interview: InterviewSession }>(`/api/interview/application/${applicationId}`),
 
   getAdminUsers: () => request<{ users: User[] }>('/api/admin/users'),
 };

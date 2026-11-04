@@ -8,6 +8,7 @@ import applicationRoutes from './src/server/routes/applicationRoutes';
 import authRoutes from './src/server/routes/authRoutes';
 import jobRoutes from './src/server/routes/jobRoutes';
 import notificationRoutes from './src/server/routes/notificationRoutes';
+import interviewRoutes from './src/server/routes/interviewRoutes';
 
 async function startServer() {
   await db.initialize();
@@ -29,6 +30,7 @@ async function startServer() {
   app.use('/api/applications', applicationRoutes);
   app.use('/api/ai', aiRoutes);
   app.use('/api/notifications', notificationRoutes);
+  app.use('/api/interview', interviewRoutes);
 
   // Admin specific endpoints
   app.get('/api/admin/stats', authMiddleware, requireRole(['ADMIN']), async (req, res) => {

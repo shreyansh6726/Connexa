@@ -270,6 +270,7 @@ export const SearchJobs: React.FC<SearchJobsProps> = ({ onNavigate, initialTab =
         <JobDetails
           job={selectedJob}
           hasApplied={appliedJobIds.has(selectedJob._id)}
+          onNavigate={onNavigate}
           onClose={() => setSelectedJob(null)}
           onApplySuccess={() => {
             fetchJobs();
