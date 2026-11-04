@@ -91,12 +91,15 @@ export interface Application {
   status: ApplicationStatus;
   aiMatchScore: number;
   aiMatchAnalysis: string;
+  interviewId?: string;
+  interviewScore?: number;
+  interviewRecommendation?: string;
   appliedAt: string;
 }
 
 export interface Notification {
   _id: string;
-  recipient: string; // User ID or 'ADMIN_ALL'
+  recipient: string;
   sender?: {
     _id: string;
     name: string;
@@ -133,4 +136,43 @@ export interface EnhanceJobResult {
 export interface AuthResponse {
   user: User;
   token: string;
+}
+
+export interface InterviewMessage {
+  id: string;
+  sender: 'ai' | 'candidate';
+  text: string;
+  timestamp: string;
+  score?: number;
+  feedback?: string;
+}
+
+export interface InterviewEvaluation {
+  overallScore: number;
+  technicalScore: number;
+  communicationScore: number;
+  problemSolvingScore: number;
+  summary: string;
+  strengths: string[];
+  areasForImprovement: string[];
+  hiringRecommendation: 'STRONG_HIRE' | 'HIRE' | 'CONSIDER' | 'NO_HIRE';
+}
+
+export interface InterviewSession {
+  _id: string;
+  candidateId: string;
+  candidateName: string;
+  candidateEmail?: string;
+  jobId: string;
+  jobTitle: string;
+  companyName: string;
+  applicationId?: string;
+  status: 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  currentQuestionIndex: number;
+  totalQuestions: number;
+  questions: string[];
+  messages: InterviewMessage[];
+  evaluation?: InterviewEvaluation;
+  createdAt: string;
+  completedAt?: string;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Award, Briefcase, CheckCircle2, Clock, Search, Sparkles, UserCheck, XCircle } from 'lucide-react';
+import { ArrowRight, Award, Bot, Briefcase, CheckCircle2, Clock, Search, Sparkles, UserCheck, XCircle } from 'lucide-react';
 import { AiMatchBadge } from '../../components/AiMatchBadge';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
@@ -144,6 +144,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onNavigate
                     <th className="px-5 py-3">AI Fit Index</th>
                     <th className="px-5 py-3">Status</th>
                     <th className="px-5 py-3">Applied Date</th>
+                    <th className="px-5 py-3">Live AI Interview</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
